@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def mainscreen(request):
+    return render(request, 'titlemenu.html')
