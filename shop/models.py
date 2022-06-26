@@ -1,16 +1,27 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
 
 class Product(models.Model):
     title = models.CharField(max_length=255, null=True)
     description = models.TextField(null=True, blank=True)
     unit_price = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(0)])
     inventory = models.IntegerField(validators=[MinValueValidator(0)])
+    image = models.ImageField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.title
 
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
+
 class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
