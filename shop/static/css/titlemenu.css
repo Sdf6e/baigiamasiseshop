@@ -1,9 +1,0 @@
-body {background-color:rgb(183, 212, 50);margin:0;padding:0;; background-size: cover; background-repeat: no-repeat;}
-header {background-color:#222; border-bottom: 2px solid #ccc;}
-main {display: block;background-color: rgba(64, 193, 53, 0.3); color: #eee; padding: 0.5rem 2rem;}
-nav  {padding: 0.5rem 0;}
-a {color: rgb(49, 35, 35)}
-a:hoover {color: rgb(153, 216, 34);text-decoration: none; border-bottom: 3px solid rgb(24, 15, 15);}
-header ul li {display:inline-block;margin:0 0.5rem;}
-aside {float:right; background-color: #359; width: 30%;; background-size:  cover; border: 1px solid #ccc; border-radius: 10px;}
-header img {max-height:  20px;}
