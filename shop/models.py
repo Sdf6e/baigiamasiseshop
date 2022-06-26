@@ -1,81 +1,46 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 
-class Promotion(models.Model):
-    description = models.CharField(max_length=255)
-    discount = models.FloatField()
-
-class Collection(models.Model):
-    title = models.CharField(max_length=255)
-    featured_product = models.ForeignKey(
-        'Product', on_delete=models.SET_NULL, null=True, related_name='+', blank=True)
-
-    def __str__(self) -> str:
-        return self.title
-
-    class Meta:
-        ordering = ['title']
-
 class Product(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, null=True)
     description = models.TextField(null=True, blank=True)
     unit_price = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(0)])
     inventory = models.IntegerField(validators=[MinValueValidator(0)])
-    last_update = models.DateTimeField(auto_now=True)
-    collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
-    promotion = models.ManyToManyField(Promotion, blank=True)
 
     def __str__(self) -> str:
         return self.title
-    
-    class Meta:
-        ordering = ['title']
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=255)
-    birth_date = models.DateField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
-    
-    class Meta:
-        ordering = ['first_name', 'last_name']
 
 class Order(models.Model):
-    PAYMENT_STATUS_PENDING = 'P'
-    PAYMENT_STATUS_FAILED = 'F'
-    PAYMENT_STATUS_COMPLETE = 'C'
-    PAYMENT_STATUS_CHOICES = [
-        (PAYMENT_STATUS_PENDING, 'Pending'),
-        (PAYMENT_STATUS_FAILED, 'Failed'),
-        (PAYMENT_STATUS_COMPLETE, 'Complete')
-    ]
     placed_at = models.DateTimeField(auto_now_add=True)
-    payment_status = models.CharField(
-        max_length=1, choices=PAYMENT_STATUS_CHOICES, 
-        default=PAYMENT_STATUS_PENDING)
+    payment_status = models.BooleanField(default=False, null=True, blank=False)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    transaction_id = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return str(self.id)
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveSmallIntegerField()
-    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
+    date_added = models.DateTimeField(auto_now_add=True)
 
 class Address(models.Model):
-    street = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, null=True)
+    city = models.CharField(max_length=255, null= True)
     customer =models.ForeignKey(Customer, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
+    zipcode = models.CharField(max_length=255, null=True)
+    state = models.CharField(max_length=255, null=True)
+    date_added = models.DateTimeField(auto_now_add=True)
 
-class Cart(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveSmallIntegerField()
-    
-
+    def __str__(self):
+        return self.address
