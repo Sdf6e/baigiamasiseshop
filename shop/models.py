@@ -51,9 +51,9 @@ class Order(models.Model):
         return total
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    quantity = models.PositiveSmallIntegerField()
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
+    quantity = models.PositiveSmallIntegerField(default=0, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     @property
